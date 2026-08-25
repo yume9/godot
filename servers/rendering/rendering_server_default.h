@@ -715,6 +715,7 @@ public:
 	/* CAMERA API */
 
 	FUNCRIDSPLIT(camera)
+	FUNC3(camera_set_skew, RID, bool, float)
 	FUNC4(camera_set_perspective, RID, float, float, float)
 	FUNC4(camera_set_orthogonal, RID, float, float, float)
 	FUNC5(camera_set_frustum, RID, float, Vector2, float, float)

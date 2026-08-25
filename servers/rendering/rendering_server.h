@@ -528,6 +528,7 @@ public:
 	/* CAMERA API */
 
 	virtual RID camera_create() = 0;
+	virtual void camera_set_skew(RID p_camera, bool p_enable, float p_degrees) = 0;
 	virtual void camera_set_perspective(RID p_camera, float p_fovy_degrees, float p_z_near, float p_z_far) = 0;
 	virtual void camera_set_orthogonal(RID p_camera, float p_size, float p_z_near, float p_z_far) = 0;
 	virtual void camera_set_frustum(RID p_camera, float p_size, Vector2 p_offset, float p_z_near, float p_z_far) = 0;

@@ -65,6 +65,9 @@ private:
 
 	ProjectionType mode = PROJECTION_PERSPECTIVE;
 
+	bool skew = false;
+	real_t skew_angle_degrees = 45.0;
+
 	InterpolatedProperty<real_t> fov = 75.0;
 	InterpolatedProperty<real_t> size = 1.0;
 	InterpolatedProperty<Vector2> frustum_offset;
@@ -174,6 +177,12 @@ public:
 	virtual Vector3 project_position(const Point2 &p_point, real_t p_z_depth) const;
 
 	Vector<Vector3> get_near_plane_points() const;
+
+	void set_skew_enabled(bool p_enable);
+	bool get_skew_enabled() const;
+
+	void set_skew_angle_degrees(real_t p_degrees);
+	real_t get_skew_angle_degrees() const;
 
 	void set_cull_mask(uint32_t p_layers);
 	uint32_t get_cull_mask() const;

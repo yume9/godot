@@ -87,6 +87,13 @@ void RendererSceneCull::camera_initialize(RID p_rid) {
 	camera_owner.initialize_rid(p_rid);
 }
 
+void RendererSceneCull::camera_set_skew(RID p_camera, bool p_enable, float p_degrees) { 
+	Camera *camera = camera_owner.get_or_null(p_camera);
+	ERR_FAIL_NULL(camera);
+	camera->skew = p_enable;
+	camera->inv_cos_skew = 1.0 / Math::cos(Math::deg_to_rad(p_degrees));
+}
+
 void RendererSceneCull::camera_set_perspective(RID p_camera, float p_fovy_degrees, float p_z_near, float p_z_far) {
 	Camera *camera = camera_owner.get_or_null(p_camera);
 	ERR_FAIL_NULL(camera);
@@ -2735,6 +2742,10 @@ void RendererSceneCull::render_camera(const Ref<RenderSceneBuffers> &p_render_bu
 						camera->zfar,
 						camera->vaspect);
 			} break;
+		}
+
+		if (camera->skew) {
+			projection[1][1] *= camera->inv_cos_skew;
 		}
 
 		camera_data.set_camera(transform, projection, is_orthogonal, vaspect, jitter, taa_frame_count, camera->visible_layers);

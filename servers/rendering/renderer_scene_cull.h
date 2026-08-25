@@ -79,6 +79,8 @@ public:
 		};
 		Type type;
 		float fov;
+		bool skew;
+		float inv_cos_skew;
 		float znear, zfar;
 		float size;
 		Vector2 offset;
@@ -91,6 +93,8 @@ public:
 		Transform3D transform;
 
 		Camera() {
+			skew = false;
+			inv_cos_skew = 0.0;
 			visible_layers = 0xFFFFFFFF;
 			fov = 75;
 			type = PERSPECTIVE;
@@ -107,6 +111,7 @@ public:
 	virtual RID camera_allocate();
 	virtual void camera_initialize(RID p_rid);
 
+	virtual void camera_set_skew(RID p_camera, bool p_enable, float p_degrees);
 	virtual void camera_set_perspective(RID p_camera, float p_fovy_degrees, float p_z_near, float p_z_far);
 	virtual void camera_set_orthogonal(RID p_camera, float p_size, float p_z_near, float p_z_far);
 	virtual void camera_set_frustum(RID p_camera, float p_size, Vector2 p_offset, float p_z_near, float p_z_far);
