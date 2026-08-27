@@ -87,7 +87,7 @@ void RendererSceneCull::camera_initialize(RID p_rid) {
 	camera_owner.initialize_rid(p_rid);
 }
 
-void RendererSceneCull::camera_set_skew(RID p_camera, bool p_enable, float p_degrees) { 
+void RendererSceneCull::camera_set_skew(RID p_camera, bool p_enable, float p_degrees) {
 	Camera *camera = camera_owner.get_or_null(p_camera);
 	ERR_FAIL_NULL(camera);
 	camera->skew = p_enable;
@@ -2723,15 +2723,18 @@ void RendererSceneCull::render_camera(const Ref<RenderSceneBuffers> &p_render_bu
 						camera->zfar,
 						camera->vaspect);
 				is_orthogonal = true;
-			} break;
-			case Camera::PERSPECTIVE: {
-				projection.set_perspective(
-						camera->fov,
-						p_viewport_size.width / (float)p_viewport_size.height,
-						camera->znear,
-						camera->zfar,
-						camera->vaspect);
-
+				if (camera->skew) {
+					projection[1][1] *= camera->inv_cos_skew;
+				}
+				break;
+				case Camera::PERSPECTIVE: {
+					projection.set_perspective(
+							camera->fov,
+							p_viewport_size.width / (float)p_viewport_size.height,
+							camera->znear,
+							camera->zfar,
+							camera->vaspect);
+				}
 			} break;
 			case Camera::FRUSTUM: {
 				projection.set_frustum(
@@ -2742,10 +2745,6 @@ void RendererSceneCull::render_camera(const Ref<RenderSceneBuffers> &p_render_bu
 						camera->zfar,
 						camera->vaspect);
 			} break;
-		}
-
-		if (camera->skew) {
-			projection[1][1] *= camera->inv_cos_skew;
 		}
 
 		camera_data.set_camera(transform, projection, is_orthogonal, vaspect, jitter, taa_frame_count, camera->visible_layers);

@@ -67,6 +67,7 @@ private:
 
 	bool skew = false;
 	real_t skew_angle_degrees = 45.0;
+	real_t _skew_cos = Math::cos(Math::deg_to_rad(skew_angle_degrees));
 
 	InterpolatedProperty<real_t> fov = 75.0;
 	InterpolatedProperty<real_t> size = 1.0;

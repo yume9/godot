@@ -450,6 +450,9 @@ Vector3 Camera3D::project_ray_origin(const Point2 &p_pos) const {
 		Vector3 ray;
 		ray.x = pos.x * (hsize)-hsize / 2;
 		ray.y = (1.0 - pos.y) * (vsize)-vsize / 2;
+		if (skew) {
+            ray.y *= _skew_cos;
+        }
 		ray.z = -_near;
 		ray = get_camera_transform().xform(ray);
 		return ray;
@@ -755,7 +758,7 @@ void Camera3D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "projection", PROPERTY_HINT_ENUM, "Perspective,Orthogonal,Frustum"), "set_projection", "get_projection");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "current"), "set_current", "is_current");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "skew"), "set_skew_enabled", "get_skew_enabled");
-	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "skew_angle_degrees", PROPERTY_HINT_RANGE, "0,360,0.1,degrees"), "set_skew_angle_degrees", "get_skew_angle_degrees");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "skew_angle_degrees", PROPERTY_HINT_RANGE, "1.0,89.0,1.0,degrees"), "set_skew_angle_degrees", "get_skew_angle_degrees");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fov", PROPERTY_HINT_RANGE, "1,179,0.1,degrees"), "set_fov", "get_fov");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "size", PROPERTY_HINT_RANGE, "0.001,100,0.001,or_greater,suffix:m"), "set_size", "get_size");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "frustum_offset", PROPERTY_HINT_NONE, "suffix:m"), "set_frustum_offset", "get_frustum_offset");
@@ -788,7 +791,9 @@ real_t Camera3D::get_skew_angle_degrees() const {
 }
 
 void Camera3D::set_skew_angle_degrees(real_t p_degrees) {
+	ERR_FAIL_COND(p_degrees < 1.0 || p_degrees > 89.0);
 	skew_angle_degrees = p_degrees;
+	_skew_cos = Math::cos(Math::deg_to_rad(skew_angle_degrees));
 	RenderingServer::get_singleton()->camera_set_skew(camera, skew, skew_angle_degrees);
 }
 
