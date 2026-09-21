@@ -82,6 +82,8 @@ public:
 		float fov;
 		float znear, zfar;
 		float size;
+		bool skew_enabled;
+		float inv_skew_cos;
 		Vector2 offset;
 		uint32_t visible_layers;
 		bool vaspect;
@@ -100,6 +102,8 @@ public:
 			znear = 0.05;
 			zfar = 4000;
 			size = 1.0;
+			skew_enabled = true;
+			inv_skew_cos = 1.0 / Math::cos(Math::deg_to_rad(45.0));
 			offset = Vector2();
 			vaspect = false;
 		}
@@ -110,6 +114,7 @@ public:
 	virtual RID camera_allocate();
 	virtual void camera_initialize(RID p_rid);
 
+	virtual void camera_set_skew(RID p_camera, bool p_enabled, float p_angle_degrees);
 	virtual void camera_set_perspective(RID p_camera, float p_fovy_degrees, float p_z_near, float p_z_far);
 	virtual void camera_set_orthogonal(RID p_camera, float p_size, float p_z_near, float p_z_far);
 	virtual void camera_set_frustum(RID p_camera, float p_size, Vector2 p_offset, float p_z_near, float p_z_far);

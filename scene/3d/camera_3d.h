@@ -65,6 +65,8 @@ private:
 
 	ProjectionType mode = PROJECTION_PERSPECTIVE;
 
+	bool skew_enabled = true;
+	InterpolatedProperty<real_t> skew_angle = 45.0;
 	InterpolatedProperty<real_t> fov = 75.0;
 	InterpolatedProperty<real_t> size = 1.0;
 	InterpolatedProperty<Vector2> frustum_offset;
@@ -148,6 +150,8 @@ public:
 
 	RID get_camera() const;
 
+	bool get_skew_enabled() const;
+	real_t get_skew_angle() const;
 	real_t get_fov() const;
 	real_t get_size() const;
 	real_t get_far() const;
@@ -156,6 +160,8 @@ public:
 
 	ProjectionType get_projection() const;
 
+	void set_skew_enabled(bool p_enable);
+	void set_skew_angle(real_t p_angle_degrees);
 	void set_fov(real_t p_fov);
 	void set_size(real_t p_size);
 	void set_far(real_t p_far);

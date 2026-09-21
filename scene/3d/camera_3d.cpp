@@ -118,7 +118,6 @@ void Camera3D::_update_camera_mode() {
 	switch (mode) {
 		case PROJECTION_PERSPECTIVE: {
 			set_perspective(fov, _near, _far);
-
 		} break;
 		case PROJECTION_ORTHOGONAL: {
 			set_orthogonal(size, _near, _far);
@@ -703,11 +702,15 @@ void Camera3D::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_camera_projection"), &Camera3D::get_camera_projection);
 	ClassDB::bind_method(D_METHOD("get_fov"), &Camera3D::get_fov);
 	ClassDB::bind_method(D_METHOD("get_frustum_offset"), &Camera3D::get_frustum_offset);
+	ClassDB::bind_method(D_METHOD("get_skew_enabled"), &Camera3D::get_skew_enabled);
+	ClassDB::bind_method(D_METHOD("get_skew_angle"), &Camera3D::get_skew_angle);
 	ClassDB::bind_method(D_METHOD("get_size"), &Camera3D::get_size);
 	ClassDB::bind_method(D_METHOD("get_far"), &Camera3D::get_far);
 	ClassDB::bind_method(D_METHOD("get_near"), &Camera3D::get_near);
 	ClassDB::bind_method(D_METHOD("set_fov", "fov"), &Camera3D::set_fov);
 	ClassDB::bind_method(D_METHOD("set_frustum_offset", "offset"), &Camera3D::set_frustum_offset);
+	ClassDB::bind_method(D_METHOD("set_skew_enabled", "enable"), &Camera3D::set_skew_enabled);
+	ClassDB::bind_method(D_METHOD("set_skew_angle", "angle_degrees"), &Camera3D::set_skew_angle);
 	ClassDB::bind_method(D_METHOD("set_size", "size"), &Camera3D::set_size);
 	ClassDB::bind_method(D_METHOD("set_far", "far"), &Camera3D::set_far);
 	ClassDB::bind_method(D_METHOD("set_near", "near"), &Camera3D::set_near);
@@ -751,6 +754,8 @@ void Camera3D::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "doppler_tracking", PROPERTY_HINT_ENUM, "Disabled,Idle,Physics"), "set_doppler_tracking", "get_doppler_tracking");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "projection", PROPERTY_HINT_ENUM, "Perspective,Orthogonal,Frustum"), "set_projection", "get_projection");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "current"), "set_current", "is_current");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "skew_enabled"), "set_skew_enabled", "get_skew_enabled");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "skew_angle", PROPERTY_HINT_RANGE, "0.1,89,0.1,degrees"), "set_skew_angle", "get_skew_angle");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "fov", PROPERTY_HINT_RANGE, "1,179,0.1,degrees"), "set_fov", "get_fov");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "size", PROPERTY_HINT_RANGE, "0.001,100,0.001,or_greater,suffix:m"), "set_size", "get_size");
 	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "frustum_offset", PROPERTY_HINT_NONE, "suffix:m"), "set_frustum_offset", "get_frustum_offset");
@@ -767,6 +772,14 @@ void Camera3D::_bind_methods() {
 	BIND_ENUM_CONSTANT(DOPPLER_TRACKING_DISABLED);
 	BIND_ENUM_CONSTANT(DOPPLER_TRACKING_IDLE_STEP);
 	BIND_ENUM_CONSTANT(DOPPLER_TRACKING_PHYSICS_STEP);
+}
+
+bool Camera3D::get_skew_enabled() const {
+	return skew_enabled;
+}
+
+real_t Camera3D::get_skew_angle() const {
+	return skew_angle;
 }
 
 real_t Camera3D::get_fov() const {
@@ -791,6 +804,17 @@ real_t Camera3D::get_far() const {
 
 Camera3D::ProjectionType Camera3D::get_projection() const {
 	return mode;
+}
+
+void Camera3D::set_skew_enabled(bool p_enable) {
+	skew_enabled = p_enable;
+	RenderingServer::get_singleton()->camera_set_skew(camera, p_enable, skew_angle);
+}
+
+void Camera3D::set_skew_angle(real_t p_angle_degrees) {
+	ERR_FAIL_COND(p_angle_degrees < 0.1 || p_angle_degrees > 89.0);
+	skew_angle = p_angle_degrees;
+	RenderingServer::get_singleton()->camera_set_skew(camera, skew_enabled, skew_angle);
 }
 
 void Camera3D::set_fov(real_t p_fov) {
