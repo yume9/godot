@@ -65,7 +65,7 @@ private:
 
 	ProjectionType mode = PROJECTION_PERSPECTIVE;
 
-	bool skew_enabled = true;
+	bool skew_enabled = false;
 	InterpolatedProperty<real_t> skew_angle = 45.0;
 	InterpolatedProperty<real_t> fov = 75.0;
 	InterpolatedProperty<real_t> size = 1.0;

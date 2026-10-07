@@ -31,6 +31,7 @@
 #include "camera_3d.h"
 
 #include "core/config/engine.h"
+#include "core/math/math_funcs.h"
 #include "core/math/projection.h"
 #include "core/math/transform_interpolator.h"
 #include "core/object/callable_mp.h"
@@ -445,6 +446,11 @@ Vector3 Camera3D::project_ray_origin(const Point2 &p_pos) const {
 		} else {
 			hsize = size * viewport_size.aspect();
 			vsize = size;
+		}
+
+		if (skew_enabled) {
+			const real_t inv_skew_cos = 1.0 / Math::cos(Math::deg_to_rad((real_t)skew_angle));
+			vsize /= inv_skew_cos;
 		}
 
 		Vector3 ray;

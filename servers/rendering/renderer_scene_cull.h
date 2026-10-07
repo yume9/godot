@@ -102,7 +102,7 @@ public:
 			znear = 0.05;
 			zfar = 4000;
 			size = 1.0;
-			skew_enabled = true;
+			skew_enabled = false;
 			inv_skew_cos = 1.0 / Math::cos(Math::deg_to_rad(45.0));
 			offset = Vector2();
 			vaspect = false;
